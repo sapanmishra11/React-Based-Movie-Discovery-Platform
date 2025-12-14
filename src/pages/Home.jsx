@@ -43,6 +43,19 @@ function Home() {
     }
   };
 
+  const saveToFavorites = async (movie) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(movie)
+      });
+      if (response.ok) alert("Movie added to MongoDB!");
+    } catch (err) {
+      console.error("Failed to save:", err);
+    }
+  };
+
   return (
     <div className="home">
       <form onSubmit={handleSearch} className="search-form">
@@ -61,15 +74,16 @@ function Home() {
         {error && <div className="error-message">{error}</div>}
 
       {loading ? (
-        <div className="loading">Loading...</div>
-      ) : (
         <div className="movies-grid">
           {movies.map((movie) => (
-            <MovieCard movie={movie} key={movie.id} />
+            <div key={movie.id} className="movie-container"> 
+              <MovieCard movie={movie} />
+              <button onClick={() => saveToFavorites(movie)}>
+                Save to Favorites
+              </button>
+            </div>
           ))}
         </div>
-      )}
-    </div>
   );
 }
 
